@@ -14,6 +14,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/mitchellh/go-homedir"
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -59,7 +60,8 @@ func genSSHConfig(node *Node) *defaultClient {
 	if node.KeyPath == "" {
 		pemBytes, err = ioutil.ReadFile(path.Join(u.HomeDir, ".ssh/id_rsa"))
 	} else {
-		pemBytes, err = ioutil.ReadFile(node.KeyPath)
+		keyPath, _ := homedir.Expand(node.KeyPath)
+		pemBytes, err = ioutil.ReadFile(keyPath)
 	}
 	if err != nil {
 		l.Error(err)
